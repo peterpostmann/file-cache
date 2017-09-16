@@ -60,6 +60,44 @@ $cache->delete($id);
 
 ```
 
+#### Cache files based on custom timestamp
+
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+$cache = new FileCache();
+
+$id = "user/10";
+
+// some function which generates data
+function getData()
+{
+    return array(
+    'name' => 'John',
+    'age'  => 20,
+    'sex'  => 'f');
+}
+
+// a timestamp which indicates if the data changed
+$timestamp = filemtime(__FILE__);
+
+// Get data from cache if cache is newer than timestamp
+$user = $cache->get($id, $timestamp);
+
+// If cache is expired or does not exist, re-generate data and store in cache
+if(!$user)
+{
+    $user = getData();
+    $cache->save($id, $user, 0);
+}
+
+print_r($user);
+
+```
+
+
 ### Change cache directory
 
 set parameter "cache_dir" to constructor 

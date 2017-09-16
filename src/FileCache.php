@@ -41,12 +41,20 @@ class FileCache
      * Fetches an entry from the cache.
      *
      * @param string $id
+     * @param int    $timestamp
      */
-    public function get($id)
+    public function get($id, $timestamp = 0)
     {
         $file_name = $this->getFileName($id);
 
         if (!is_file($file_name) || !is_readable($file_name)) {
+            return false;
+        }
+        
+        $filetime = filemtime($file_name);
+        
+        if ($filetime < $timestamp) {
+            @unlink($file_name);
             return false;
         }
 
@@ -134,7 +142,7 @@ class FileCache
             }
         }
         $file_name  = $this->getFileName($id);
-        $lifetime   = time() + $lifetime;
+        $lifetime   = ($lifetime > 0) ? (time() + $lifetime) : 0;
         $serialized = serialize($data);
         $result     = static::atomic_file_put_contents($file_name, $lifetime . PHP_EOL . $serialized);
         if ($result === false) {
