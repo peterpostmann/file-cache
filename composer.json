@@ -1,18 +1,23 @@
 {
-    "name": "inouet/file-cache",
+    "name": "peterpostmann/file-cache",
     "type": "library",
     "description": "A simple PHP class for caching data in the filesystem.",
     "keywords": ["cache", "file"],
-    "homepage": "http://github.com/inouet/file-cache",
+    "homepage": "http://github.com/peterpostmann/file-cache",
     "support": {
-        "issues": "https://github.com/inouet/file-cache/issues",
-        "source": "https://github.com/inouet/file-cache"
+        "issues": "https://github.com/peterpostmann/file-cache/issues",
+        "source": "https://github.com/peterpostmann/file-cache"
     },
     "authors": [
         {
             "name": "Taiji Inoue",
             "email": "inudog@gmail.com",
             "role": "Maintainer"
+        },
+        {
+            "name": "Peter Postmann",
+            "email": "peter@postmann.org",
+            "role": "Developer"
         }
     ],
     "license": [
