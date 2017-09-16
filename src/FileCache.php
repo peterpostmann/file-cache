@@ -77,6 +77,46 @@ class FileCache
     }
 
     /**
+     * Generates a Globally Unique Identifier
+     *
+     * @return string
+     */
+    public static function guid()
+    {
+        if (function_exists('com_create_guid') === true)
+        {
+            return trim(com_create_guid(), '{}');
+        }
+
+        return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', 
+                        mt_rand(0, 65535), 
+                        mt_rand(0, 65535), 
+                        mt_rand(0, 65535), 
+                        mt_rand(16384, 20479), 
+                        mt_rand(32768, 49151), 
+                        mt_rand(0, 65535), 
+                        mt_rand(0, 65535), 
+                        mt_rand(0, 65535));
+    }
+ 
+    /**
+     * Writes data atomically.
+     *
+     * @param string $filename
+     * @param mixed  $data
+     *
+     * @return bool
+     */
+    public static function atomic_file_put_contents($filename, $data)
+    {
+        $tmpName = $filename.'-'.static::guid();
+
+        if(!file_put_contents($tmpName, $data)) return false;
+
+        return rename($tmpName, $filename);
+    }
+
+    /**
      * Puts data into the cache.
      *
      * @param string $id
@@ -96,7 +136,7 @@ class FileCache
         $file_name  = $this->getFileName($id);
         $lifetime   = time() + $lifetime;
         $serialized = serialize($data);
-        $result     = file_put_contents($file_name, $lifetime . PHP_EOL . $serialized);
+        $result     = static::atomic_file_put_contents($file_name, $lifetime . PHP_EOL . $serialized);
         if ($result === false) {
             return false;
         }
